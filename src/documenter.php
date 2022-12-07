@@ -6,7 +6,7 @@
   $base_url = str_contains($_SERVER['HTTP_REFERER'],'index.php') ?
     str_replace('index.php','',$_SERVER['HTTP_REFERER']) :
     $_SERVER['HTTP_REFERER'];
-  $saveInPath = strtotime(date('Y-m-d H:i:s'));
+  $saveInPath = $_POST['nameapp'] ?? strtotime(date('Y-m-d H:i:s'));
   function removeAsteriskFromComments($str){
     $arr = explode('*', $str);
     if(count($arr) == 1) return $arr[0];
@@ -155,9 +155,20 @@
       $opened = file(
         $file->path
       );
+
+      $filename = str_replace('.php', '', $file->filename);
+      $file_description = null;
+
       $functions = [];
       foreach($opened as $num_line => $line){
         $real_num_line = $num_line + 1;
+        if(str_contains($line, "class $filename")){
+          $comments = handleComment(
+            $opened, $real_num_line
+          );
+          if(isset($comments->description)) $file_description = $comments->description;
+          continue;
+        }
         if(str_contains($line, ' function ')){
           $line = trim($line);
           $splited = explode('function',$line);
@@ -196,9 +207,9 @@
         }
       }
 
-      $filename = str_replace('.php', '', $file->filename);
       $handled= [
         'name' => $filename,
+        'description' => $file_description,
         'functions' => $functions
       ];
       save($saveInPath, "controllers-$filename.json", json_encode($handled));

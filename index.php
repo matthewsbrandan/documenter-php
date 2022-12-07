@@ -32,10 +32,21 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         <?php endif ?>
-        <div class="mb-3">
-          <label for="path" class="form-label">Digite a raiz do aplicativo que deseja documentar</label>
-          <input type="text" class="form-control" id="path" name="path" placeholder="C://xampp/htdocs/path_to_directory">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+                <label for="nameapp" class="form-label">Nome da documentação</label>
+                <input type="text" class="form-control" id="nameapp" name="nameapp" placeholder="nome-do-app-documentado">
+              </div>
+          </div>
+          <div class="col-md-8">
+            <div class="mb-3">
+              <label for="path" class="form-label">Digite a raiz do aplicativo que deseja documentar</label>
+              <input type="text" class="form-control" id="path" name="path" placeholder="C://xampp/htdocs/path_to_directory">
+            </div>
+          </div>
         </div>
+        
 
         <div class="form-check">
           <input

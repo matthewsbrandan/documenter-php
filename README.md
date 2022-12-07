@@ -8,6 +8,24 @@
   <h2>Padrões de comentários</h2>
   <p class="text-sm text-muted">Para que sua documentação tenha informações relavantes siga o nosso padrão de comentários e nos ajude a identificar descrição da função, detalhes de parâmetro, retorno e etc.</p>
   
+  <strong>Modelo de comentário</strong>
+  <pre class="text-sm text-muted bg-dark px-2 py-3 rounded-2">
+/**
+ * @description
+ * @route_name
+ * @http
+ * @return_type
+ * @params
+ *  {
+ *  }
+ * @endparams
+ * @return
+ *  {
+ *  }
+ * @endreturn
+ */</pre>
+  <p class="text-sm text-muted">Abaixo veremos cada uma das propriedades explicadas com mais detalhe</p>
+  
   <strong>Bloco de comentários</strong>
   <p class="text-sm text-muted">O comentário deve ser exatamente como o exemplo abaixo, iniciando com <em>/**</em> e terminando com <em>*/</em>, sendo logo seguido pela própria função para que possa ser identificado pelo algoritmo e relacionado a função correta.</p>
   <pre class="text-sm text-muted bg-dark px-2 py-3 rounded-2">
@@ -78,6 +96,9 @@ public function name(){}</pre>
     </li>
     <li class="list-group-item">
       <b>exception: </b><span class="text-muted">Caso haja alguma condição para o parâmetro, especifique nessa propriedade.</span>
+    </li>
+    <li class="list-group-item">
+      <b>default: </b><span class="text-muted">Valor padrão para o campo.</span>
     </li>
     <li class="list-group-item">
       <b>data: </b><span class="text-muted">Caso queira especificar as propriedades esperadas do parametro(se for um objeto ou array), você pode inserir a propriedade data, e dentro dela inserir os subparâmetros seguindo as regras acima.</span>

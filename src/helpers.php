@@ -19,7 +19,7 @@
     if(!is_dir($path)) mkdir($path);
     $path.= "/$file";
 
-    $fp = fopen($path, "a+");  
+    $fp = fopen($path, "w+");  
     fwrite($fp, $content);
     fclose($fp);
   }
