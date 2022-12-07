@@ -1,1 +1,0 @@
-{"name":"AdvertisementController","functions":[{"name":"store","access_modifier":"public","params":["Request $request"],"line":11,"content":null},{"name":"delete","access_modifier":"public","params":["$id"],"line":27,"content":null},{"name":"staticHandleIsTextInTheBlackList","access_modifier":null,"params":["$text","$type = null"],"line":44,"content":null}]}
