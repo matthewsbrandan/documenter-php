@@ -36,13 +36,29 @@
           <div class="col-md-4">
             <div class="mb-3">
                 <label for="nameapp" class="form-label">Nome da documentação</label>
-                <input type="text" class="form-control" id="nameapp" name="nameapp" placeholder="nome-do-app-documentado">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nameapp"
+                  name="nameapp"
+                  value="<?php echo $_SESSION['nameapp'] ?? ''; ?>"
+                  placeholder="nome-do-app-documentado"
+                  required
+                >
               </div>
           </div>
           <div class="col-md-8">
             <div class="mb-3">
               <label for="path" class="form-label">Digite a raiz do aplicativo que deseja documentar</label>
-              <input type="text" class="form-control" id="path" name="path" placeholder="C://xampp/htdocs/path_to_directory">
+              <input
+                type="text"
+                class="form-control"
+                id="path"
+                name="path"
+                value="<?php echo $_SESSION['path'] ?? ''; ?>"
+                placeholder="C://xampp/htdocs/path_to_directory"
+                required
+              >
             </div>
           </div>
         </div>

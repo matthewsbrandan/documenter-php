@@ -5,8 +5,12 @@
   require_once './helpers.php';
   $base_url = str_contains($_SERVER['HTTP_REFERER'],'index.php') ?
     str_replace('index.php','',$_SERVER['HTTP_REFERER']) :
-    $_SERVER['HTTP_REFERER'];
+    $_SERVER['HTTP_REFERER'];    
   $saveInPath = $_POST['nameapp'] ?? strtotime(date('Y-m-d H:i:s'));
+
+  $_SESSION['nameapp'] = $saveInPath;
+  $_SESSION['path'] = $_POST['path'] ?? null;
+
   function removeAsteriskFromComments($str){
     $arr = explode('*', $str);
     if(count($arr) == 1) return $arr[0];
