@@ -1,0 +1,1 @@
+{"name":"ShortcutController","functions":[{"name":"store","access_modifier":"public","params":["Request $request"],"line":14,"content":null},{"name":"reorder","access_modifier":"public","params":["Request $request"],"line":113,"content":null},{"name":"delete","access_modifier":"public","params":["$slug","$index"],"line":140,"content":null}]}

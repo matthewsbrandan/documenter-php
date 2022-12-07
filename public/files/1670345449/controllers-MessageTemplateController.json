@@ -1,0 +1,1 @@
+{"name":"MessageTemplateController","functions":[{"name":"index","access_modifier":"public","params":[""],"line":13,"content":null},{"name":"store","access_modifier":"public","params":["Request $request"],"line":25,"content":null},{"name":"delete","access_modifier":"public","params":["$id"],"line":42,"content":null}]}

@@ -1,0 +1,1 @@
+{"name":"LogController","functions":[{"name":"__construct","access_modifier":"public","params":["$take = 20"],"line":14,"content":null},{"name":"index","access_modifier":"public","params":["$user_id = null"],"line":17,"content":null},{"name":"get","access_modifier":"public","params":["$skip = 0","$user_id = null","$json = true"],"line":29,"content":null}]}

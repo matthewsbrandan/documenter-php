@@ -1,0 +1,1 @@
+{"name":"SessionController","functions":[{"name":"close","access_modifier":"public","params":["$id"],"line":11,"content":null}]}
