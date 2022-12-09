@@ -45,6 +45,7 @@
       'route_name' => null,
       'return_type' => null,
       'http'=> null,
+      'tags' => [],
       'params' => null,
       'return' => null
     ];
@@ -97,7 +98,16 @@
       if(str_contains($line, '@http')){
         $content->http = trim(str_replace('@http', '', $line));
         continue;
-      } 
+      }
+      if(str_contains($line, '@tags')){
+        $content->tags = array_map(function($item){
+          return trim($item);
+        }, explode(
+          ',',
+          trim(str_replace('@tags', '', $line))
+        ));
+        continue;
+      }
     }
 
     #region HANDLE PARAMS AND RETURNS

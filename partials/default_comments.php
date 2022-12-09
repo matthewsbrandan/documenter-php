@@ -8,6 +8,7 @@
  * @description
  * @route_name
  * @http
+ * @tags
  * @return_type
  * @params
  *  {
@@ -40,6 +41,10 @@ public function name(){}</pre>
   <strong>Método HTTP</strong>
   <p class="text-sm text-muted">Você pode especificar qual é o método http válido para chamar a função</p>
   <pre class="text-sm text-muted bg-dark px-2 py-3 rounded-2" style="white-space: normal;"> * @http [POST,GET,PUT ou DELETE]</pre>
+
+  <strong>Tags</strong>
+  <p class="text-sm text-muted">Você pode adicionar tags(separadas por vírgula) para marcar suas funções. </p>
+  <pre class="text-sm text-muted bg-dark px-2 py-3 rounded-2" style="white-space: normal;"> * @tags auth,admin</pre>
 
   <strong>Tipo de Retorno</strong>
   <p class="text-sm text-muted">Você pode especificar o tipo de retorno da função</p>
