@@ -10,6 +10,7 @@
 
   $_SESSION['nameapp'] = $saveInPath;
   $_SESSION['path'] = $_POST['path'] ?? null;
+  $_SESSION['map'] = $_POST['map'];
 
   function removeAsteriskFromComments($str){
     $arr = explode('*', $str);

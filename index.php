@@ -91,7 +91,16 @@
           ?>
             <div class="col-md-4 col-sm-6">
               <div class="form-check">
-                <input class="form-check-input check-map-option" name="map[]" type="checkbox" value="<?php echo $key; ?>" id="map-<?php echo $key; ?>">
+                <input
+                  class="form-check-input check-map-option"
+                  name="map[]"
+                  type="checkbox"
+                  value="<?php echo $key; ?>"
+                  id="map-<?php echo $key; ?>"
+                  <?php if(isset($_SESSION['map']) && is_array($_SESSION['map']) && in_array($key, $_SESSION['map'])): ?>
+                    checked
+                  <?php endif; ?>
+                >
                 <label class="form-check-label" for="map-<?php echo $key; ?>">
                   <?php echo $value; ?>
                 </label>
