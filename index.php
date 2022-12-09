@@ -16,13 +16,31 @@
     <title>Documenter PHP</title>
     <link rel="shortcut icon" href="./public/favicon.webp" type="image/x-webp">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <style>
+      pre,[onclick]{ cursor: pointer; }
+      pre, pre::after{
+        transition: .6s;
+      }
+      pre:hover{
+        transform: scale(1.01);
+      }
+      pre:hover::after{
+        content: "copiar";
+        position: absolute;
+        top: .5rem;
+        right: .5rem;
+        border: 1px solid;
+        border-radius: .5rem;
+        padding: 0 .4rem;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
       <h1 class="mt-4">Documenter PHP!</h1>
       <form method="POST" action="./src/documenter.php">
         <?php if($notify): ?>
-          <div class="alert <?php
+          <div class="alert alert-auto-dismiss <?php
             echo isset($notify->type) ? 'alert-'.$notify->type : 'alert-light';
           ?> alert-dismissible fade show mt-3 mb-2" role="alert">
             <?php if(isset($notify->title)): ?>
@@ -119,5 +137,23 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <?php include './partials/alerts.php'; ?>
+    <script>
+      $(function(){
+        if($('.alert-auto-dismiss')[0]) setTimeout(
+          () => $('.alert-auto-dismiss .btn-close').click(),
+          5 * 1000
+        );
+        $('pre').on('click', function(){
+          handleClipboard($(this).html());
+        });
+      });
+
+      function handleClipboard(value){
+        navigator.clipboard.writeText(value).then(() => {
+          alertNotify('success', 'Código copiado');
+        });
+      }
+    </script>
   </body>
 </html>
