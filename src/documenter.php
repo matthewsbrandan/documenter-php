@@ -175,6 +175,8 @@
       $file_description = null;
 
       $functions = [];
+      $active_regions = [];
+      $error_regions = [];
       foreach($opened as $num_line => $line){
         $real_num_line = $num_line + 1;
         if(str_contains($line, "class $filename")){
@@ -190,7 +192,14 @@
           if(count($splited) != 2) continue;
 
           $accessor = trim($splited[0]);
-          if(!in_array($accessor,['public','private','protected'])) $accessor = null;
+          if(!in_array($accessor,[
+            'public',
+            'private',
+            'protected',
+            'public static',
+            'private static',
+            'protected static',
+          ])) $accessor = null;
           
           $desc = trim($splited[1]);
           $index = strpos($desc, '(');
@@ -214,14 +223,46 @@
             'access_modifier' => $accessor,
             'params' => $params,
             'line' => $real_num_line,
+            'regions' => $active_regions,
             'content' =>  $comments
           ];
           if(!isset($resume[$file->filename]['functions'])) $resume[$file->filename]['functions'] = [];
           $resume[$file->filename]['name'] = str_replace('.php','', $file->filename);
           $resume[$file->filename]['functions'][]= $function_name;
         }
+        #region HANDLE REGIONS
+        if(str_contains($line, '#region')){
+          $region = trim(str_replace('#region','', $line));
+          $active_regions[] = $region;
+          continue;
+        }
+        if(str_contains($line, '#endregion')){
+          $region = trim(str_replace('#endregion','', $line));
+          $count_regions = count($active_regions);
+          if($count_regions > 0){
+            if($active_regions[$count_regions - 1] == $region){
+              array_pop($active_regions);
+            }else $error_regions[] = $region;
+          }
+          continue;
+        }
+        #endregion HANDLE REGIONS
       }
-
+      
+      if(count($error_regions) > 0) foreach($functions as $fn){
+        if(count($fn->regions) > 0){
+          foreach($error_regions as $err){
+            if(in_array($err, $fn->regions)){
+              $fn->regions = array_filter($fn->regions, function($rg) use ($error_regions){
+                return !in_array($rg, $error_regions);
+              });
+              break;
+            }
+          }
+        }
+        
+      }
+      
       $handled= [
         'name' => $filename,
         'description' => $file_description,
