@@ -38,7 +38,7 @@
   <body>
     <div class="container">
       <h1 class="mt-4">Documenter PHP!</h1>
-      <form method="POST" action="./src/documenter.php">
+      <form method="POST" action="./src/documenter.php" onsubmit="return submitLoad();">
         <?php if($notify): ?>
           <div class="alert alert-auto-dismiss <?php
             echo isset($notify->type) ? 'alert-'.$notify->type : 'alert-light';
@@ -138,6 +138,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <?php include './partials/alerts.php'; ?>
+    <?php include './partials/loading.php'; ?>
     <script>
       $(function(){
         if($('.alert-auto-dismiss')[0]) setTimeout(
