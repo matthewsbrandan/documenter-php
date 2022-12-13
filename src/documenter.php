@@ -137,7 +137,7 @@
 
     return $content;
   }
-  function mapControllers($dir){
+  function mapDir($dir, $title, $slug, $handleSubDir = false){
     global $saveInPath;
     global $base_url;
 
@@ -148,10 +148,12 @@
       while(($file = readdir($dh)) !== false) {
         if(in_array($file,['.','..'])) continue;
         $path = $dir . '\\' . $file;
-        if(is_dir($path)) $sub_directories[] = (object)[
-          'dirname' => $file,
-          'path' => $path
-        ];
+        if(is_dir($path)){
+          if($handleSubDir) $sub_directories[] = (object)[
+            'dirname' => $file,
+            'path' => $path
+          ];
+        }
         else $watch[] = (object)[
           'filename' => $file,
           'path' => $path
@@ -160,8 +162,8 @@
       closedir($dh);
     }
     else redirectBackWithMessage([
-      'title' => 'Erro ao abrir <b>Controladores</b>',
-      'message' => 'Não foi possível abrir a pasta de <b>Controladores</b>',
+      'title' => "Erro ao abrir <b>$title</b>",
+      'message' => "Não foi possível abrir a pasta de <b>$title</b>",
       'type' => 'danger',
     ]);
     #endregion LOAD FILES AND SUBDIRECTORIES TO WATCH
@@ -248,7 +250,7 @@
         }
         #endregion HANDLE REGIONS
       }
-      
+
       if(count($error_regions) > 0) foreach($functions as $fn){
         if(count($fn->regions) > 0){
           foreach($error_regions as $err){
@@ -268,12 +270,12 @@
         'description' => $file_description,
         'functions' => $functions
       ];
-      save($saveInPath, "controllers-$filename.json", json_encode($handled));
+      save([$saveInPath,$slug], "$filename.json", json_encode($handled));
     }
     // LIDAR COM SUBDIRETÓRIOS
     // $sub_directories
     return [
-      $base_url . "public/files/$saveInPath/controllers.json",
+      $base_url . "public/files/$saveInPath/$slug",
       $resume
     ];
   }
@@ -341,7 +343,7 @@
       ]
   ];
 
-  $message = null;
+  $messages = [];
   if($map->controllers->active){
     $dir_controllers = $dir . (
       substr($dir,-1) == '\\' ? '': '\\'
@@ -352,17 +354,88 @@
       'type' => 'danger',
     ]);
 
-    [$file_generated,$files] = mapControllers($dir_controllers);
+    [$files_generated,$files] = mapDir($dir_controllers,'Controladores','controllers', true);
     $map->controllers->files = $files;
 
     $message = 'Documentação dos <b>Controladores</b> gerada com sucesso!';
-    // if($file_generated) $message.= "<br/><a target=\"_blank\" href=\"$file_generated\">controller.json</a>"; 
+    if($files_generated) $message.= "<br/><a target=\"_blank\" href=\"$files_generated\">Controllers</a>"; 
+    $messages[] = $message;
   }
+  if($map->services->active){
+    $dir_services = $dir . (
+      substr($dir,-1) == '\\' ? '': '\\'
+    ) . 'app\Services';
+    if(!is_dir($dir_services)) redirectBackWithMessage([
+      'title' => 'Erro de mapeamento',
+      'message' => 'Não foi possível mapear o <b>Serviços</b> pois a pasta não está na localização esperada',
+      'type' => 'danger',
+    ]);
 
+    [$files_generated,$files] = mapDir($dir_services,'Serviços','services');
+    $map->services->files = $files;
+
+    $message = 'Documentação dos <b>Serviços</b> gerada com sucesso!';
+    if($files_generated) $message.= "<br/><a target=\"_blank\" href=\"$files_generated\">Services</a>"; 
+    $messages[] = $message;
+  }
+  if($map->repositories->active){
+    $dir_repositories = $dir . (
+      substr($dir,-1) == '\\' ? '': '\\'
+    ) . 'app\Repositories';
+    if(!is_dir($dir_repositories)) redirectBackWithMessage([
+      'title' => 'Erro de mapeamento',
+      'message' => 'Não foi possível mapear o <b>Repositórios</b> pois a pasta não está na localização esperada',
+      'type' => 'danger',
+    ]);
+
+    [$files_generated,$files] = mapDir($dir_repositories,'Repositórios','repositories');
+    $map->repositories->files = $files;
+
+    $message = 'Documentação dos <b>Repositórios</b> gerada com sucesso!';
+    if($files_generated) $message.= "<br/><a target=\"_blank\" href=\"$files_generated\">Repositórios</a>"; 
+    $messages[] = $message;
+  }
+  if($map->models->active){
+    $dir_models = $dir . (
+      substr($dir,-1) == '\\' ? '': '\\'
+    ) . 'app';
+    if(!is_dir($dir_models)) redirectBackWithMessage([
+      'title' => 'Erro de mapeamento',
+      'message' => 'Não foi possível mapear os <b>Modelos</b> pois a pasta não está na localização esperada',
+      'type' => 'danger',
+    ]);
+
+    [$files_generated,$files] = mapDir($dir_models,'Modelos','models');
+    $map->models->files = $files;
+
+    $message = 'Documentação dos <b>Modelos</b> gerada com sucesso!';
+    if($files_generated) $message.= "<br/><a target=\"_blank\" href=\"$files_generated\">Modelos</a>"; 
+    $messages[] = $message;
+  }
+  if($map->observers->active){
+    $dir_observers = $dir . (
+      substr($dir,-1) == '\\' ? '': '\\'
+    ) . 'app\Observers';
+    if(!is_dir($dir_observers)) redirectBackWithMessage([
+      'title' => 'Erro de mapeamento',
+      'message' => 'Não foi possível mapear os <b>Observadores</b> pois a pasta não está na localização esperada',
+      'type' => 'danger',
+    ]);
+
+    [$files_generated,$files] = mapDir($dir_observers,'Observadores','observers');
+    $map->observers->files = $files;
+
+    $message = 'Documentação dos <b>Observadores</b> gerada com sucesso!';
+    if($files_generated) $message.= "<br/><a target=\"_blank\" href=\"$files_generated\">Observadores</a>"; 
+    $messages[] = $message;
+  }
+  
   save($saveInPath, "map.json", json_encode($map));
   $file_generated = $base_url . "public/files/$saveInPath/map.json";
-  if(!$message) $message = "Mapeamento gerado com sucesso!";
+  $message = "Mapeamento gerado com sucesso!";
   $message.= "<br/><a target=\"_blank\" href=\"$file_generated\">map.json</a>";
+  $messages[] = $message;
+  $message = implode('<br/>', $messages);
 
   redirectBackWithMessage([
     'title' => 'Gerado com sucesso',

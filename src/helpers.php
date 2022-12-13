@@ -14,9 +14,17 @@
     return header('Location: ' . $address);
   }
   function save($dir, $file, $content){
-    $path = "../public/files/$dir";
-
-    if(!is_dir($path)) mkdir($path);
+    if(is_array($dir)){
+      $path = "../public/files";
+      foreach($dir as $d){
+        $path.= "/$d";
+        if(!is_dir($path)) mkdir($path);
+      }
+    }else{
+      $path = "../public/files/$dir";
+  
+      if(!is_dir($path)) mkdir($path);
+    }
     $path.= "/$file";
 
     $fp = fopen($path, "w+");  

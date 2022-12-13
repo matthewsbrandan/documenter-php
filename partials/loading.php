@@ -24,7 +24,7 @@
 <div id="loading">
   <div class="content">
     <div class="spinner-border text-light" role="status">
-      <span class="sr-only">Loading...</span>
+      <span class="visually-hidden">Loading...</span>
     </div>
     <div class="additional"></div>
   </div>
