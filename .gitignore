@@ -1,2 +1,4 @@
 public/files
 public/files/*
+vendor
+.env

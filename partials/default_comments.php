@@ -1,4 +1,4 @@
-<div class="bg-light p-3 mt-5">
+<div class="border border-top-0 bg-light p-3 mt-0 mb-5" id="default-comments">
   <h2>Padrões de comentários</h2>
   <p class="text-sm text-muted">Para que sua documentação tenha informações relavantes siga o nosso padrão de comentários e nos ajude a identificar descrição da função, detalhes de parâmetro, retorno e etc.</p>
 

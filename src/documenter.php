@@ -1,6 +1,10 @@
 <?php
   session_start();
-  
+
+  include_once __DIR__."/../vendor/autoload.php";
+
+  $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+  $dotenv->load();
   #region DECLARE FUNCTIONS
   require_once './helpers.php';
   $base_url = str_contains($_SERVER['HTTP_REFERER'],'index.php') ?
@@ -8,9 +12,22 @@
     $_SERVER['HTTP_REFERER'];    
   $saveInPath = $_POST['nameapp'] ?? strtotime(date('Y-m-d H:i:s'));
 
+  #region HANDLE SAVE SESSION OPTIONS
   $_SESSION['nameapp'] = $saveInPath;
   $_SESSION['path'] = $_POST['path'] ?? null;
   $_SESSION['map'] = $_POST['map'];
+  if(isset($_POST['switch_remote_save'])){
+    if(!isset($_POST['remote_address'])) unset($_POST['switch_remote_save']);
+    else{
+      $_SESSION['remote_address'] = $_POST['remote_address'];
+      if(!$_ENV['DOCUMENTER_PHP_SECRET']) redirectBackWithMessage([
+        'type' =>  'danger',
+        'message' => 'Para utilizar o modo de salvamento remoto você deve configurar <b>DOCUMENTER_PHP_SECRET</b> no seu arquivo .env',
+        'title' => 'Erro de configuração'
+      ]);
+    }
+  }elseif(isset($_SESSION['remote_address'])) unset($_SESSION['remote_address']);
+  #endregion HANDLE SAVE SESSION OPTIONS
 
   function removeAsteriskFromComments($str){
     $arr = explode('*', $str);
@@ -331,16 +348,16 @@
       'active' => in_array('services', $_POST['map']),
       'files' => []
     ],
-    'routes' => (object)[
-      'name' => 'Routes',
-      'active' => in_array('routes', $_POST['map']),
-      'files' => []
-    ],
-    'views' => (object)[
-      'views' => 'Views',
-      'active' => in_array('views', $_POST['map']),
-      'files' => []
-      ]
+    // 'routes' => (object)[
+    //   'name' => 'Routes',
+    //   'active' => in_array('routes', $_POST['map']),
+    //   'files' => []
+    // ],
+    // 'views' => (object)[
+    //   'views' => 'Views',
+    //   'active' => in_array('views', $_POST['map']),
+    //   'files' => []
+    // ]
   ];
 
   $messages = [];

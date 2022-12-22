@@ -33,6 +33,12 @@
         border-radius: .5rem;
         padding: 0 .4rem;
       }
+      .nav-link.active{
+        --bs-bg-opacity: 1;
+        background-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity)) !important;
+        font-weight: 700 !important;
+        color: var(--bs-body-color) !important;
+      }
     </style>
   </head>
   <body>
@@ -50,6 +56,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         <?php endif ?>
+        <!-- BEGIN:: NAME AND LOCATION -->
         <div class="row">
           <div class="col-md-4">
             <div class="mb-3">
@@ -80,59 +87,105 @@
             </div>
           </div>
         </div>
-        
-
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            onclick="$('.check-map-option').click()"
-          >
-          <label class="form-check-label">
-          <strong>Mapear</strong>
-          </label>
-        </div>
-        
-        <div class="row mb-3">
-          <?php
-            $map = [
-              'controllers' => 'Controladores',
-              'repositories' => 'Repositórios',
-              'models' => 'Modelos',
-              'services' => 'Serviços',
-              'commands' => 'Comandos',
-              'observers' => 'Observadores',
-              'routes' => 'Rotas',
-              'views' => 'Visualizações',
-            ];
-            foreach($map as $key => $value):
-          ?>
-            <div class="col-md-4 col-sm-6">
-              <div class="form-check">
-                <input
-                  class="form-check-input check-map-option"
-                  name="map[]"
-                  type="checkbox"
-                  value="<?php echo $key; ?>"
-                  id="map-<?php echo $key; ?>"
-                  <?php if(isset($_SESSION['map']) && is_array($_SESSION['map']) && in_array($key, $_SESSION['map'])): ?>
-                    checked
-                  <?php endif; ?>
-                >
-                <label class="form-check-label" for="map-<?php echo $key; ?>">
-                  <?php echo $value; ?>
-                </label>
+        <!-- END:: NAME AND LOCATION | BEGIN:: MAP -->
+        <div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="map-all"
+              onclick="$('.check-map-option').click()"
+            >
+            <label class="form-check-label" for="map-all">
+            <strong>Mapear</strong>
+            </label>
+          </div>
+          
+          <div class="row mb-3">
+            <?php
+              $map = [
+                'controllers' => 'Controladores',
+                'repositories' => 'Repositórios',
+                'models' => 'Modelos',
+                'services' => 'Serviços',
+                'commands' => 'Comandos',
+                'observers' => 'Observadores',
+                // 'routes' => 'Rotas',
+                // 'views' => 'Visualizações',
+              ];
+              foreach($map as $key => $value):
+            ?>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input
+                    class="form-check-input check-map-option"
+                    name="map[]"
+                    type="checkbox"
+                    value="<?php echo $key; ?>"
+                    id="map-<?php echo $key; ?>"
+                    <?php if(isset($_SESSION['map']) && is_array($_SESSION['map']) && in_array($key, $_SESSION['map'])): ?>
+                      checked
+                    <?php endif; ?>
+                  >
+                  <label class="form-check-label" for="map-<?php echo $key; ?>">
+                    <?php echo $value; ?>
+                  </label>
+                </div>
               </div>
-            </div>
-          <?php endforeach ?>
+            <?php endforeach ?>
+          </div>
         </div>
+        <!-- END:: MAP | BEGIN:: REMOTE SAVE -->
+        <div class="mb-3">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              name="switch_remote_save"
+              id="switch-remote-save"
+              <?php echo isset($_SESSION['remote_address']) ? 'checked' : ''; ?>
+              onclick="handleSwitchRemoteSave()"
+            >
+            <label class="form-check-label" for="switch-remote-save">Salvar Remotamente</label>
+          </div>
+          <div class="mt-2 mb-3" style="<?php echo isset($_SESSION['remote_address']) ? '' : 'display: none;'; ?>">
+            <label for="remote-addrs" class="form-label">Endereço Remoto</label>
+            <input
+              type="text"
+              class="form-control"
+              id="remote-address"
+              name="remote_address"
+              placeholder="http:// ou C://"
+              value="<?php echo $_SESSION['remote_address'] ?? ''; ?>"
+            >
+          </div>
+        </div>
+        <!-- END:: REMOTE SAVE -->
 
         <button type="submit" class="btn btn-primary">
           Documentar
         </button>
       </form>
 
+      <ul class="nav nav-tabs mt-5">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            href="javascript: toggleTabs(false);"
+            id="to-default-comments"
+          >Padrões de Comentários</a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="javascript: toggleTabs(true);"
+            id="to-remote-settings"
+          >Configurar Salvamento Remoto</a>
+        </li>
+      </ul>
       <?php include './partials/default_comments.php'; ?>
+      <?php include './partials/remote_settings.php'; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
@@ -154,6 +207,31 @@
         navigator.clipboard.writeText(value).then(() => {
           alertNotify('success', 'Código copiado');
         });
+      }
+      function handleSwitchRemoteSave(){
+        let sw_remote = $('#switch-remote-save');
+        let target = sw_remote.parent().next();
+        if(sw_remote.prop('checked')){
+          target.show('slow');
+          $('#remote-address').focus();
+        }
+        else{
+          target.hide('slow');
+          $('#remote-address').val('');
+        }        
+      }
+      function toggleTabs(toRemoteSettings = false){
+        if(toRemoteSettings){
+          $('#remote-settings').show();
+          $('#default-comments').hide();
+          $('#to-remote-settings').addClass('active');
+          $('#to-default-comments').removeClass('active');
+        }else{
+          $('#default-comments').show();
+          $('#remote-settings').hide();
+          $('#to-default-comments').addClass('active');
+          $('#to-remote-settings').removeClass('active');
+        }
       }
     </script>
   </body>
