@@ -1,4 +1,4 @@
-<?php
+<?php  
   session_start();
   #region HANDLE NOTIFY
   $notify = null;

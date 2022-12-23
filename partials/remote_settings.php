@@ -22,7 +22,9 @@
     <p class="text-sm text-muted">
       Para configurar essa chave você deve criar uma string aleatória(de preferência com mais o menos 20 caracteres) e guardá-la em um lugar seguro em sua api (como o arquivo .env), e adicionar no arquivo <em>.env</em> desta aplicação também. Exemplo:
     </p>
-    <pre class="text-sm text-muted bg-dark px-2 py-3 rounded-2">DOCUMENTER_PHP_SECRET=t7v9yb0nu9ibqrvdsd1n0asfa</pre>
+    <pre class="text-sm text-muted bg-dark px-2 py-3 rounded-2">DOCUMENTER_PHP_SECRET=<?php
+      echo substr(bin2hex(random_bytes(20)),0,20);
+    ?></pre>
   </article>
   <article class="mt-5">
     <h4>Salvar em um caminho diferente</h4>
