@@ -16,6 +16,7 @@
   $_SESSION['nameapp'] = $saveInPath;
   $_SESSION['path'] = $_POST['path'] ?? null;
   $_SESSION['map'] = $_POST['map'];
+  unset($_SESSION['REQUEST_QUEUE']);
   if(isset($_POST['switch_remote_save'])){
     if(!isset($_POST['remote_address'])) unset($_POST['switch_remote_save']);
     else{
@@ -25,6 +26,7 @@
         'message' => 'Para utilizar o modo de salvamento remoto você deve configurar <b>DOCUMENTER_PHP_SECRET</b> no seu arquivo .env',
         'title' => 'Erro de configuração'
       ]);
+      $_SESSION['SAVE_ERRORS'] = [];
     }
   }elseif(isset($_SESSION['remote_address'])) unset($_SESSION['remote_address']);
   #endregion HANDLE SAVE SESSION OPTIONS
@@ -448,6 +450,9 @@
   }
   
   save($saveInPath, "map.json", json_encode($map));
+
+  if(count($_SESSION['SAVE_ERRORS']) > 0) dd($_SESSION['SAVE_ERRORS']);
+
   $file_generated = $base_url . "public/files/$saveInPath/map.json";
   $message = "Mapeamento gerado com sucesso!";
   $message.= "<br/><a target=\"_blank\" href=\"$file_generated\">map.json</a>";

@@ -25,6 +25,10 @@
     <pre class="text-sm text-muted bg-dark px-2 py-3 rounded-2">DOCUMENTER_PHP_SECRET=<?php
       echo substr(bin2hex(random_bytes(20)),0,20);
     ?></pre>
+
+    <p class="text-sm text-muted border rounded-2 p-2">
+      <b class="text-dark">RECOMENDAÇÃO:</b> Se tiver um número muito grande de arquivos a serem mapeados, é recomendado que você execute por partes, para não sobre carregar a sua API. Exemplo: primeiro controllers, depois observers, e assim por diante.
+    </p>
   </article>
   <article class="mt-5">
     <h4>Salvar em um caminho diferente</h4>

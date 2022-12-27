@@ -233,6 +233,66 @@
           $('#to-remote-settings').removeClass('active');
         }
       }
+      <?php if(isset($_SESSION['REQUEST_QUEUE']) && isset($_SESSION['remote_address'])): ?>
+        const requests = {
+          queue: <?php echo json_encode($_SESSION['REQUEST_QUEUE']); ?>,
+          total: <?php echo count($_SESSION['REQUEST_QUEUE']); ?>,
+          finished: 0
+        };
+        $(function(){
+          submitLoad(`
+            <p>
+              Preparando para enviar documentação...<br/>
+              ${requests.finished} de ${requests.total }
+            </p>
+          `);
+          
+          handleSendDocumentationToRemote()
+        });
+
+        function handleSendDocumentationToRemote(){
+          if(requests.finished >= requests.total){
+            stopLoad();
+            return;
+          }
+
+          let current_req = requests.queue[requests.finished];
+          submitLoad(`
+            <p>
+              Enviando ${current_req.file}...<br/>
+              ${requests.finished} de ${requests.total}
+            </p>
+          `);
+
+          $.get(current_req.location).done(data => {
+            let fields = {
+              path: current_req.path,
+              body: data,
+              remote_address: "<?php echo $_SESSION['remote_address']; ?>"
+            };
+            $.post(`src/remote.php`, fields).done((data) => {
+              console.log(data);
+              if(data.result){
+                alertNotify('success', `${current_req.file} enviado!`);
+                requests.finished++;
+                setTimeout(() => handleSendDocumentationToRemote(), 1000);
+                return;
+              }
+  
+              alertNotify('danger', data.response);
+              stopLoad();
+            }).fail((err) => {
+              alertNotify('danger', `Houve um erro ao enviar o arquivo ${current_req.file}`);
+              console.error(err);
+              stopLoad();
+            });
+          }).fail(err => {
+            alertNotify('danger',`Não foi possível ler o arquivo ${current_req.file}`)
+            console.error(err);
+            stopLoad();
+          });
+        }
+      <?php unset($_SESSION['REQUEST_QUEUE']); endif;  ?>
     </script>
   </body>
 </html>

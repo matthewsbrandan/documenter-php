@@ -49,8 +49,10 @@
 
     curl_close($curl);
 
-    if($json_decode) $response = json_decode($response);
-    return [$response, $err];
+    $formated = $response;
+    if($json_decode) $formated = json_decode($response);
+    
+    return [$formated, $err, $response];
   }
   function save($dir, $file, $content){
     #region REMOTE SAVE
@@ -58,6 +60,7 @@
       $documenter_php_secret = $_ENV['DOCUMENTER_PHP_SECRET']; 
       $address = $_SESSION['remote_address'];
 
+      if(!isset($_SESSION['SAVE_ERRORS'])) $_SESSION['SAVE_ERRORS'] = [];
       if(strpos($address, 'http://') !== false ||
         strpos($address, 'https://') !== false
       ){
@@ -74,18 +77,35 @@
         }
         $data['path'][] = $file;
         #endregion HANDLE PATH
-
-        [$res, $err] = requestHTTP('POST', $address, $data, (object)['header' => [
-          "documenter-php-secret: $documenter_php_secret"
-        ]]);
-        
-        if($err || !$res) return (object)[
-          'result' => false,
-          'response' => 'Houve um erro ao enviar a requisição' . (is_string($err) ? 
-            '. ' . $err : ''
-          )
+        if(!isset($_SESSION['REQUEST_QUEUE'])) $_SESSION['REQUEST_QUEUE'] = [];
+        $_SESSION['REQUEST_QUEUE'][] = [
+          'file' => $file,
+          'path' => $data['path'],
+          'location' => "public/files/" . (is_array($dir) ? implode('/', $dir) : $dir) . "/$file"
         ];
-        return $res;
+        // [$res, $err, $real] = requestHTTP('POST', $address, $data, (object)['header' => [
+        //   "documenter-php-secret: $documenter_php_secret"
+        // ]]);
+
+        // if(is_string($err)) $err = trim($err);
+        // if($err || !$res){
+        //   $data = (object)[
+        //     'result' => false,
+        //     'response' => 'Houve um erro ao enviar a requisição do ' . implode('/', $data['path']) . (is_string($err) ? 
+        //       '. ' . $err : ''
+        //     ),
+        //     'file' => $data['path'],
+        //     'res' => $res,
+        //     'err' => $err
+        //   ];
+        //   if($res == null && !$err){ echo $real; dd($res, $err, $real); }
+        //   $_SESSION['SAVE_ERRORS'][] = $data;
+        //   return $data;
+        // }
+        // if(!$res->result) $_SESSION['SAVE_ERRORS'][] = (object)[((array) $res) + [
+        //   'file' => $data['path']
+        // ]];
+        // return $res;
       }
       else{
         // CRIAR LÓGICA PARA CAMINHO CUSTOMIZADO
